@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Fontana Blue Resort – beach / water theme */
+  --background: 210 40% 98%; /* Light Sand #F8FAFC */
+  --foreground: 222 47% 11%; /* Dark Slate #0F172A */
+  --card: 0 0% 100%; /* White #FFFFFF */
+  --card-foreground: 222 47% 11%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222 47% 11%;
+  --primary: 217 91% 60%; /* Ocean Blue #2563EB */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 199 95% 59%; /* Sky Blue #38BDF8 */
+  --secondary-foreground: 222 47% 11%;
+  --muted: 210 40% 96%;
+  --muted-foreground: 215 16% 47%; /* Gray #64748B */
+  --accent: 187 91% 43%; /* Aqua #06B6D4 */
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --ring: 217 91% 60%;
+  --radius: 0.75rem;
+  --success: 142 71% 45%; /* Green #22C55E */
+  --success-foreground: 0 0% 100%;
+}
+
+.dark {
+  --background: 222 47% 8%;
+  --foreground: 210 40% 98%;
+  --card: 222 47% 11%;
+  --card-foreground: 210 40% 98%;
+  --popover: 222 47% 11%;
+  --popover-foreground: 210 40% 98%;
+  --primary: 217 91% 60%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 199 95% 59%;
+  --secondary-foreground: 222 47% 11%;
+  --muted: 217 32% 17%;
+  --muted-foreground: 215 10% 50%;
+  --accent: 187 91% 43%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 62% 50%;
+  --destructive-foreground: 210 40% 98%;
+  --border: 217 32% 24%;
+  --input: 217 32% 24%;
+  --ring: 217 91% 60%;
+  --success: 142 71% 45%;
+  --success-foreground: 0 0% 100%;
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+}
+
