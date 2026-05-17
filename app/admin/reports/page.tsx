@@ -63,7 +63,7 @@ export default function AdminReportsPage() {
   const exportReservations = () => {
     const doc = new jsPDF({ orientation: "landscape" });
     doc.setFontSize(14);
-    doc.text("Fontana Resort - Reservations Report", 14, 14);
+    doc.text("Fontana Blue Cold Spring - Reservations Report", 14, 14);
     autoTable(doc, {
       startY: 20,
       head: [["Reference", "Guest", "Email", "Cottage", "Check-in", "Check-out", "Status", "Payment", "Total"]],
@@ -87,7 +87,7 @@ export default function AdminReportsPage() {
   const exportPayments = () => {
     const doc = new jsPDF({ orientation: "landscape" });
     doc.setFontSize(14);
-    doc.text("Fontana Resort - Payments Report", 14, 14);
+    doc.text("Fontana Blue Cold Spring - Payments Report", 14, 14);
     autoTable(doc, {
       startY: 20,
       head: [["Payment ID", "Reference", "Guest", "Amount", "Method", "Status", "Date"]],
@@ -109,7 +109,7 @@ export default function AdminReportsPage() {
   const exportReviews = () => {
     const doc = new jsPDF({ orientation: "landscape" });
     doc.setFontSize(14);
-    doc.text("Fontana Resort - Reviews Report", 14, 14);
+    doc.text("Fontana Blue Cold Spring - Reviews Report", 14, 14);
     autoTable(doc, {
       startY: 20,
       head: [["Review ID", "Author", "Cottage", "Rating", "Comment", "Admin Reply", "Date"]],

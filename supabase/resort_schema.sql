@@ -1,4 +1,4 @@
--- Fontana Resort: cottages, reservations, payments, messages, reviews
+-- Fontana Blue Cold Spring: cottages, reservations, payments, messages, reviews
 -- Run in Supabase SQL Editor AFTER fontana_users.sql exists.
 -- Enables RLS and seeds sample cottages.
 

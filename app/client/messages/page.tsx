@@ -69,7 +69,7 @@ export default function ClientMessagesPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-md font-semibold tracking-tight">Messages</h1>
-          <p className="text-xs text-muted-foreground">Chat with Fontana Blue Resort (saved in your account).</p>
+          <p className="text-xs text-muted-foreground">Chat with Fontana Blue Cold Spring (saved in your account).</p>
         </div>
         <Badge variant="statusActive" className="w-fit rounded-full px-3 py-1 text-[0.7rem] font-medium">
           Resort messages
@@ -85,7 +85,7 @@ export default function ClientMessagesPage() {
               FB
             </div>
             <div className="space-y-0.5">
-              <CardTitle className="text-sm font-semibold">Fontana Blue Resort</CardTitle>
+              <CardTitle className="text-sm font-semibold">Fontana Blue Cold Spring</CardTitle>
               <p className="text-[0.7rem] text-muted-foreground">We typically reply within business hours.</p>
             </div>
           </div>

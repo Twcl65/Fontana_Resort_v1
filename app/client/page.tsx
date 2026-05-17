@@ -149,7 +149,7 @@ export default function StudentDashboardPage() {
 
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-md font-semibold tracking-tight">Fontana Blue Resort Dashboard</h1>
+          <h1 className="text-md font-semibold tracking-tight">Fontana Blue Cold Spring Dashboard</h1>
           <p className="text-sm text-muted-foreground">Track your reservations and payment status.</p>
         </div>
         <Button asChild variant="book" className="shrink-0">

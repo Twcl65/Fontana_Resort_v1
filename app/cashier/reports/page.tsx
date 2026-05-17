@@ -48,7 +48,7 @@ export default function CashierReportsPage() {
   const exportCashierReportPdf = () => {
     const doc = new jsPDF();
     doc.setFontSize(16);
-    doc.text("Fontana Resort - Cashier Report", 14, 16);
+    doc.text("Fontana Blue Cold Spring - Cashier Report", 14, 16);
     autoTable(doc, {
       startY: 24,
       head: [["Metric", "Value"]],

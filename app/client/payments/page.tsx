@@ -12,7 +12,7 @@ import { fetchCurrentUserWithRole } from "@/lib/auth";
 import { listReservationsForUser, upsertPaymentForReservation, type ReservationWithRelations } from "@/lib/fontana-data";
 
 const gcashDetails = {
-  name: "Fontana Blue Resort",
+  name: "Fontana Blue Cold Spring",
   number: "0912-345-6789"
 };
 

@@ -313,7 +313,7 @@ export default function CottagePage() {
       <div>
         <h1 className="text-md font-semibold tracking-tight">Book New Cottages</h1>
         <p className="text-sm text-muted-foreground">
-          Book a cottage for your stay at Fontana Blue Resort.
+          Book a cottage for your stay at Fontana Blue Cold Spring.
         </p>
       </div>
 

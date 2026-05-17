@@ -177,7 +177,7 @@ export function RoleShell({
           </nav>
 
           <div className="border-t border-border px-4 py-3 text-[0.7rem] text-muted-foreground">
-            <p>Fontana Blue Resort</p>
+            <p>Fontana Blue Cold Spring</p>
           </div>
         </aside>
 

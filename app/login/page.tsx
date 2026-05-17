@@ -395,7 +395,7 @@ function LandingPageContent() {
             <div className="flex flex-col items-center gap-2">
               <Image
                 src={FontanaLogo}
-                alt="Fontana Blue Resort"
+                alt="Fontana Blue Cold Spring"
                 width={88}
                 height={88}
                 className="h-20 w-20 shrink-0 rounded-xl object-contain"
@@ -497,7 +497,7 @@ function LandingPageContent() {
             <div className="flex flex-col items-center gap-2">
               <Image
                 src={FontanaLogo}
-                alt="Fontana Blue Resort"
+                alt="Fontana Blue Cold Spring"
                 width={88}
                 height={88}
                 className="h-20 w-20 shrink-0 rounded-xl object-contain"
@@ -597,12 +597,12 @@ function LandingPageContent() {
           >
             <Image
               src={FontanaLogo}
-              alt="Fontana Blue Resort"
+              alt="Fontana Blue Cold Spring"
               width={36}
               height={36}
               className="h-9 w-auto object-contain mix-blend-multiply"
             />
-            <span className="hidden sm:inline">Fontana Blue Resort</span>
+            <span className="hidden sm:inline">Fontana Blue Cold Spring</span>
           </Link>
           <nav className="flex items-center gap-1 sm:gap-4">
             {NAV_LINKS.map((link) => (
@@ -650,7 +650,7 @@ function LandingPageContent() {
             <div className="space-y-6 text-left text-white">
               <p className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-[0.2em] text-white/80 backdrop-blur">
                 <Waves className="h-3 w-3" />
-                Fontana Blue Resort • Jasaan, Misamis Oriental
+                Fontana Blue Cold Spring • Jasaan, Misamis Oriental
               </p>
               <h1 className="text-balance text-4xl font-semibold tracking-tight sm:text-5xl md:text-6xl">
                 Your coastal escape,
@@ -897,10 +897,10 @@ function LandingPageContent() {
             <div className="grid gap-10 lg:grid-cols-[1.1fr,1fr] items-center">
               <div className="space-y-4">
                 <h2 className="text-2xl md:text-3xl font-semibold tracking-tight text-foreground">
-                  A quick snapshot of Fontana Blue
+                  A quick snapshot of Fontana Blue Cold Spring
                 </h2>
                 <p className="text-sm md:text-base text-muted-foreground">
-                  Nestled in Jasaan, Misamis Oriental, Fontana Blue Resort combines clear water,
+                  Nestled in Jasaan, Misamis Oriental, Fontana Blue Cold Spring combines clear water,
                   green surroundings, and cottage-style spaces designed for small groups and families.
                   The reservation system you&apos;re viewing was built to remove the friction from that
                   experience.
@@ -996,7 +996,7 @@ function LandingPageContent() {
                 <CardHeader className="pb-3">
                   <CardTitle className="text-sm font-semibold flex items-center gap-2">
                     <Waves className="h-4 w-4" />
-                    Resort contact details
+                    Cold Spring contact details
                   </CardTitle>
                   <CardDescription className="text-[0.7rem] text-white/80">
                     For questions about the system or on-site concerns, reach out using the details
@@ -1043,7 +1043,7 @@ function LandingPageContent() {
                   </div>
                 </CardContent>
                 <CardFooter className="border-t border-white/10 pt-3 text-[0.7rem] text-white/70">
-                  © {new Date().getFullYear()} Fontana Blue Resort. All rights reserved.
+                  © {new Date().getFullYear()} Fontana Blue Cold Spring. All rights reserved.
                 </CardFooter>
               </Card>
             </div>
