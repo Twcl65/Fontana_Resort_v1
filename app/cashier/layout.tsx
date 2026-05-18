@@ -14,7 +14,12 @@ export default function CashierLayout({ children }: { children: ReactNode }) {
           { label: "Reservations", href: "/cashier/reservations", icon: RoleIcons.reservations },
           { label: "Payments", href: "/cashier/payments", icon: RoleIcons.payments },
           { label: "Invoices/Receipts", href: "/cashier/invoices-receipts", icon: RoleIcons.documents },
-          { label: "Daily Transaction", href: "/cashier/daily-transaction", icon: RoleIcons.calendar },
+          {
+            label: "Availability Calendar",
+            href: "/cashier/calendar",
+            icon: RoleIcons.calendar,
+          },
+          { label: "Daily Transaction", href: "/cashier/daily-transaction", icon: RoleIcons.reports },
           { label: "Reports", href: "/cashier/reports", icon: RoleIcons.reports },
           { label: "Messages", href: "/cashier/messages", icon: RoleIcons.messages },
           { label: "Reviews", href: "/cashier/reviews", icon: RoleIcons.reviews },

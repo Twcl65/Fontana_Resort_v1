@@ -588,47 +588,5 @@ export async function getDashboardStats(): Promise<{
   };
 }
 
-export type CalendarDayState = "available" | "booked" | "pending";
-
-export async function getCalendarDayStates(
-  year: number,
-  monthIndex: number
-): Promise<{ data: Map<number, CalendarDayState>; error: string | null }> {
-  const start = new Date(year, monthIndex, 1);
-  const end = new Date(year, monthIndex + 1, 0);
-  const startStr = start.toISOString().slice(0, 10);
-  const endStr = end.toISOString().slice(0, 10);
-
-  const { data, error } = await supabase
-    .from("fontana_reservations")
-    .select("check_in, check_out, reservation_status")
-    .lte("check_in", endStr)
-    .gte("check_out", startStr)
-    .in("reservation_status", ["Pending", "Confirmed"]);
-
-  if (error) return { data: new Map(), error: error.message };
-
-  const map = new Map<number, CalendarDayState>();
-  const daysInMonth = end.getDate();
-
-  for (let d = 1; d <= daysInMonth; d++) {
-    map.set(d, "available");
-  }
-
-  for (const row of data ?? []) {
-    const ci = new Date(row.check_in + "T12:00:00");
-    const co = new Date(row.check_out + "T12:00:00");
-    for (let t = ci.getTime(); t <= co.getTime(); t += 86400000) {
-      const dt = new Date(t);
-      if (dt.getFullYear() !== year || dt.getMonth() !== monthIndex) continue;
-      const day = dt.getDate();
-      const st =
-        row.reservation_status === "Pending" ? "pending" : ("booked" as CalendarDayState);
-      const prev = map.get(day);
-      if (prev === "booked" || st === "booked") map.set(day, "booked");
-      else map.set(day, st);
-    }
-  }
-
-  return { data: map, error: null };
-}
+export type { CalendarDayState } from "@/lib/fontana-calendar";
+export { getCalendarDayStates } from "@/lib/fontana-calendar";
