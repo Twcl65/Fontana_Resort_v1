@@ -255,7 +255,7 @@ with check (
 -- ---------------------------------------------------------------------------
 create table if not exists public.fontana_reviews (
   id uuid primary key default gen_random_uuid(),
-  user_id uuid not null references auth.users (id) on delete cascade,
+  user_id uuid not null references public.fontana_users (id) on delete cascade,
   cottage_id uuid references public.fontana_cottages (id) on delete set null,
   rating int not null check (rating >= 1 and rating <= 5),
   title text,

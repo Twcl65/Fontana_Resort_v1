@@ -5,8 +5,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { patchAdminProfile } from "@/lib/admin-api-client";
 import { fetchCurrentUserWithRole } from "@/lib/auth";
-import { supabase } from "@/lib/supabaseClient";
 
 export default function AdminProfilePage() {
   const [userId, setUserId] = useState("");
@@ -67,17 +67,10 @@ export default function AdminProfilePage() {
     setMessage("");
 
     try {
-      const { error: profileError } = await supabase
-        .from("fontana_users")
-        .update({ full_name: fullName.trim() || null })
-        .eq("id", userId);
-
-      if (profileError) throw profileError;
-
-      const { error: authError } = await supabase.auth.updateUser({
-        data: { full_name: fullName.trim(), avatar_url: avatarUrl.trim() || null },
+      await patchAdminProfile({
+        full_name: fullName.trim(),
+        avatar_url: avatarUrl.trim() || null,
       });
-      if (authError) throw authError;
 
       setMessage("Profile updated successfully.");
     } catch (e) {

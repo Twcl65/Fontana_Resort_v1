@@ -1,5 +1,6 @@
 import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabaseClient";
+import { supabase, supabaseAdmin } from "@/lib/supabaseClient";
+import { syncProfileToCustomerDb } from "@/lib/customer-api-client";
 import { getPasswordResetRedirectUrl } from "@/lib/oauth-config";
 
 export type AppUserRole = "admin" | "cashier" | "client";
@@ -43,7 +44,7 @@ export function getRedirectForRole(role: AppUserRole): string {
 }
 
 export async function getFontanaUserById(userId: string) {
-  return supabase
+  return supabaseAdmin
     .from("fontana_users")
     .select("id,email,full_name,role,status,created_at")
     .eq("id", userId)
@@ -57,7 +58,7 @@ export async function insertFontanaUser(payload: {
   role?: AppUserRole;
   status?: AppUserStatus;
 }) {
-  return supabase.from("fontana_users").insert({
+  return supabaseAdmin.from("fontana_users").insert({
     id: payload.id,
     email: payload.email,
     full_name: payload.full_name || null,
@@ -72,6 +73,7 @@ export async function ensureFontanaUserExists(authUser: User): Promise<FontanaUs
     throw new Error(`Failed reading profile: ${fetchError.message}`);
   }
   if (existingUser) {
+    await syncProfileToCustomerDb();
     return existingUser;
   }
 
@@ -96,6 +98,7 @@ export async function ensureFontanaUserExists(authUser: User): Promise<FontanaUs
   if (createdFetchError || !createdUser) {
     throw new Error("Failed to load user profile after creation.");
   }
+  await syncProfileToCustomerDb();
   return createdUser;
 }
 

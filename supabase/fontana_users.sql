@@ -1,8 +1,12 @@
--- Run this in Supabase SQL Editor.
--- IMPORTANT: id must always match auth.users.id
+-- Run in Supabase SQL Editor.
+--
+-- ADMIN project: run full script (includes auth trigger on auth.users).
+-- CUSTOMER project: run full script (trigger section is safe — drops auth trigger; no auth.users dependency).
+--
+-- id must always match the auth user id from the ADMIN project.
 
 create table if not exists public.fontana_users (
-  id uuid primary key references auth.users(id) on delete cascade,
+  id uuid primary key,
   full_name text,
   email text not null unique,
   role text not null default 'client' check (role in ('admin', 'cashier', 'client')),

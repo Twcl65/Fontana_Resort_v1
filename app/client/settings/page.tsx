@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { patchAdminProfile } from "@/lib/admin-api-client";
 import { fetchCurrentUserWithRole } from "@/lib/auth";
 import { supabase } from "@/lib/supabaseClient";
 
@@ -82,22 +83,12 @@ export default function ClientSettingsPage() {
     setError("");
     setMessage("");
     try {
-      const { error: dbError } = await supabase
-        .from("fontana_users")
-        .update({ full_name: profile.fullName.trim() || null })
-        .eq("id", profile.id);
-      if (dbError) throw dbError;
-
-      const { error: authError } = await supabase.auth.updateUser({
-        data: {
-          full_name: profile.fullName.trim(),
-          avatar_url: profile.avatarUrl.trim() || null,
-          phone: profile.phone.trim() || null,
-          address: profile.address.trim() || null,
-        },
+      await patchAdminProfile({
+        full_name: profile.fullName.trim(),
+        avatar_url: profile.avatarUrl.trim() || null,
+        phone: profile.phone.trim() || null,
+        address: profile.address.trim() || null,
       });
-      if (authError) throw authError;
-
       setMessage("Settings updated successfully.");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Failed to update settings.");

@@ -1,5 +1,6 @@
 -- Gallery images (JSON array of public URLs) + storage for uploads.
--- Run in Supabase SQL Editor after resort_schema.sql.
+-- *** RUN IN THE CUSTOMER SUPABASE PROJECT (ifofofolamthemtywvor), NOT THE ADMIN PROJECT ***
+-- Run after resort_schema.sql in that same customer project.
 
 alter table public.fontana_cottages
   add column if not exists image_urls jsonb not null default '[]'::jsonb;
