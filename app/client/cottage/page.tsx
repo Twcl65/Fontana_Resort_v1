@@ -419,7 +419,7 @@ export default function CottagePage() {
                   </div>
                   <p className="shrink-0 text-sm font-semibold text-primary">
                     ₱{cottage.price.toLocaleString()}
-                    <span className="text-xs font-normal text-muted-foreground"> / night</span>
+                    <span className="text-xs font-normal text-muted-foreground"> / day</span>
                   </p>
                 </div>
                 <p className="text-xs text-foreground/90 line-clamp-2">
@@ -561,7 +561,7 @@ export default function CottagePage() {
                   </div>
                   <p className="text-sm font-semibold tabular-nums text-primary">
                     ₱{selectedCottage.price.toLocaleString()}
-                    <span className="text-xs font-normal text-muted-foreground"> / night</span>
+                    <span className="text-xs font-normal text-muted-foreground"> / day</span>
                   </p>
                 </div>
 

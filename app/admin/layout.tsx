@@ -11,20 +11,16 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
         roleLabel="Admin"
         sidebarItems={[
           { label: "Dashboard", href: "/admin", icon: RoleIcons.dashboard },
-          { label: "Reservations", href: "/admin/reservations", icon: RoleIcons.reservations },
-          { label: "Manage Cottages", href: "/admin/cottages", icon: RoleIcons.cottage },
-          { label: "Payments", href: "/admin/payments", icon: RoleIcons.payments },
-          { label: "Invoices/Receipts", href: "/admin/invoices-receipts", icon: RoleIcons.documents },
-          {
-            label: "Availability Calendar",
-            href: "/admin/calendar",
-            icon: RoleIcons.calendar
-          },
-          { label: "Reports", href: "/admin/reports", icon: RoleIcons.reports },
+          { label: "Reservation", href: "/admin/reservations", icon: RoleIcons.reservations },
+          { label: "Manage Cottage", href: "/admin/cottages", icon: RoleIcons.cottage },
+          { label: "Availability Calendar", href: "/admin/calendar", icon: RoleIcons.calendar },
           { label: "User Management", href: "/admin/users", icon: RoleIcons.users },
-          { label: "Messages", href: "/admin/messages", icon: RoleIcons.messages },
+          { label: "Payments", href: "/admin/payments", icon: RoleIcons.payments },
+          { label: "Invoices/Receipt", href: "/admin/invoices-receipts", icon: RoleIcons.documents },
+          { label: "Reports", href: "/admin/reports", icon: RoleIcons.reports },
+          { label: "Message", href: "/admin/messages", icon: RoleIcons.messages },
           { label: "Reviews", href: "/admin/reviews", icon: RoleIcons.reviews },
-          { label: "Settings", href: "/admin/settings", icon: RoleIcons.settings }
+          { label: "Settings", href: "/admin/settings", icon: RoleIcons.settings },
         ]}
       >
         {children}

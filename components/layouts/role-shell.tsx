@@ -21,7 +21,6 @@ import {
   FileBadge,
   Bell,
   Menu,
-  MoreVertical,
   Calendar,
   Star,
   MessageSquare
@@ -30,6 +29,8 @@ import { cn } from "@/components/ui/utils";
 import { logout } from "@/lib/auth";
 import { fetchCurrentUserWithRole } from "@/lib/auth";
 import { getNotificationsForUser, type AppNotificationItem, type AppNotificationType } from "@/lib/fontana-notifications";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 export type SidebarItem = {
   label: string;
@@ -58,6 +59,7 @@ export function RoleShell({
   const router = useRouter();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
+  const [confirmLogoutOpen, setConfirmLogoutOpen] = useState(false);
   const [profileName, setProfileName] = useState("User");
   const [profileEmail, setProfileEmail] = useState("");
   const [profileAvatarUrl, setProfileAvatarUrl] = useState("");
@@ -115,18 +117,26 @@ export function RoleShell({
   }, [profileName, profileEmail]);
 
   const shellRole = roleLabel.toLowerCase();
-  const profileRoute =
-    shellRole === "admin"
-      ? "/admin/profile"
-      : shellRole === "cashier"
-        ? "/cashier/settings"
-        : "/client/settings";
   const settingsRoute =
     shellRole === "admin"
       ? "/admin/settings"
       : shellRole === "cashier"
         ? "/cashier/settings"
         : "/client/settings";
+
+  const confirmAndLogout = () => {
+    setIsProfileOpen(false);
+    setShowNotifications(false);
+    setConfirmLogoutOpen(true);
+  };
+
+  const performLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      router.push("/login");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-muted">
@@ -221,35 +231,25 @@ export function RoleShell({
                     : "contents"
                 }
               >
-                <div className="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-foreground/20 text-[0.65rem] font-semibold text-primary-foreground">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsProfileOpen((open) => !open);
+                    setShowNotifications(false);
+                  }}
+                  className="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-primary-foreground/20 text-[0.65rem] font-semibold text-primary-foreground hover:bg-primary-foreground/30"
+                  aria-label="Account menu"
+                >
                   {profileAvatarUrl ? (
                     <img src={profileAvatarUrl} alt={profileName} className="h-full w-full object-cover" />
                   ) : (
                     profileInitials
                   )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsProfileOpen((open) => !open)}
-                  className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md hover:bg-primary-foreground/10"
-                  aria-label="Account menu"
-                >
-                  <MoreVertical className="h-4 w-4" />
                 </button>
               </div>
 
               {isProfileOpen && (
                 <div className="absolute right-0 top-10 z-50 w-40 rounded-md border border-border bg-card text-foreground text-xs shadow-lg">
-                   <button
-                    type="button"
-                    className="block w-full px-3 py-2 text-left hover:bg-muted"
-                    onClick={() => {
-                      setIsProfileOpen(false);
-                      router.push(profileRoute);
-                    }}
-                  >
-                    Profile
-                  </button>
                   <button
                     type="button"
                     className="block w-full px-3 py-2 text-left hover:bg-muted"
@@ -258,21 +258,14 @@ export function RoleShell({
                       router.push(settingsRoute);
                     }}
                   >
-                    Settings
+                    My Profile
                   </button>
                   <button
                     type="button"
                     className="block w-full px-3 py-2 text-left text-destructive hover:bg-muted"
-                  onClick={async () => {
-                    setIsProfileOpen(false);
-                    try {
-                      await logout();
-                    } finally {
-                      router.push("/login");
-                    }
-                  }}
+                    onClick={confirmAndLogout}
                   >
-                    Sign out
+                    Logout
                   </button>
                 </div>
               )}
@@ -350,20 +343,20 @@ export function RoleShell({
               </button>
 
               <div className="flex items-center gap-0.5">
-                <div className="inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary-foreground/20 text-[0.6rem] font-semibold text-primary-foreground">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsProfileOpen((open) => !open);
+                    setShowNotifications(false);
+                  }}
+                  className="inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-full bg-primary-foreground/20 text-[0.6rem] font-semibold text-primary-foreground hover:bg-primary-foreground/30"
+                  aria-label="Account menu"
+                >
                   {profileAvatarUrl ? (
                     <img src={profileAvatarUrl} alt={profileName} className="h-full w-full object-cover" />
                   ) : (
                     profileInitials
                   )}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setIsProfileOpen((open) => !open)}
-                  className="inline-flex h-8 w-8 items-center justify-center rounded-md hover:bg-primary-foreground/10"
-                  aria-label="Account menu"
-                >
-                  <MoreVertical className="h-4 w-4" />
                 </button>
               </div>
 
@@ -374,34 +367,17 @@ export function RoleShell({
                     className="block w-full px-3 py-2 text-left hover:bg-muted"
                     onClick={() => {
                       setIsProfileOpen(false);
-                      router.push(profileRoute);
-                    }}
-                  >
-                    Profile
-                  </button>
-                  <button
-                    type="button"
-                    className="block w-full px-3 py-2 text-left hover:bg-muted"
-                    onClick={() => {
-                      setIsProfileOpen(false);
                       router.push(settingsRoute);
                     }}
                   >
-                    Settings
+                    My Profile
                   </button>
                   <button
                     type="button"
                     className="block w-full px-3 py-2 text-left text-destructive hover:bg-muted"
-                    onClick={async () => {
-                      setIsProfileOpen(false);
-                      try {
-                        await logout();
-                      } finally {
-                        router.push("/login");
-                      }
-                    }}
+                    onClick={confirmAndLogout}
                   >
-                    Sign out
+                    Logout
                   </button>
                 </div>
               )}
@@ -441,6 +417,31 @@ export function RoleShell({
           <main className="flex-1 bg-muted px-4 py-4 sm:px-6 sm:py-6 md:px-6 lg:px-8">
             <div className="max-w-6xl space-y-6">{children}</div>
           </main>
+
+          <Dialog open={confirmLogoutOpen} onOpenChange={setConfirmLogoutOpen}>
+            <DialogContent showClose={true} className="max-w-sm gap-0 p-5">
+              <DialogHeader className="space-y-0 pb-3 pt-0">
+                <DialogTitle className="text-base">Logout</DialogTitle>
+              </DialogHeader>
+              <p className="text-sm text-muted-foreground">Are you sure you want to logout?</p>
+              <DialogFooter className="mt-4 flex flex-row gap-2 sm:justify-end">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setConfirmLogoutOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  onClick={() => void performLogout()}
+                >
+                  Yes, logout
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>

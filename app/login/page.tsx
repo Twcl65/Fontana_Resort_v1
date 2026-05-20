@@ -32,12 +32,20 @@ import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
 import { cn } from "@/components/ui/utils";
-import { onAuthStateChanged, handleOAuthSession, loginWithEmail, signInWithGoogle, signUpWithEmail } from "@/lib/auth";
+import {
+  onAuthStateChanged,
+  handleOAuthSession,
+  loginWithEmail,
+  requestPasswordReset,
+  signInWithGoogle,
+  signUpWithEmail,
+} from "@/lib/auth";
 import { getAppOAuthCallbackUrl } from "@/lib/oauth-config";
 import { listCottages, type FontanaCottageRow } from "@/lib/fontana-data";
 import { normalizeCottageAmenities } from "@/lib/fontana-data";
@@ -234,6 +242,11 @@ function LandingPageContent() {
   const [rememberMe, setRememberMe] = useState(false);
   const [loginError, setLoginError] = useState("");
   const [signupError, setSignupError] = useState("");
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotLoading, setForgotLoading] = useState(false);
+  const [forgotError, setForgotError] = useState("");
+  const [forgotSuccess, setForgotSuccess] = useState("");
   const [liveCottages, setLiveCottages] = useState<LandingCottage[]>([]);
   const [cottagesLoading, setCottagesLoading] = useState(true);
   const [cottagesError, setCottagesError] = useState<string | null>(null);
@@ -257,6 +270,11 @@ function LandingPageContent() {
     if (oauthError) {
       setLoginError(decodeURIComponent(oauthError));
       setLoginOpen(true);
+    }
+    if (searchParams.get("reset") === "success") {
+      setLoginError("");
+      setLoginOpen(true);
+      setForgotSuccess("Password updated. You can log in with your new password.");
     }
   }, [searchParams]);
 
@@ -329,6 +347,28 @@ function LandingPageContent() {
       return;
     }
 
+  };
+
+  const openForgotPassword = () => {
+    setForgotEmail(loginUsernameOrEmail.trim());
+    setForgotError("");
+    setForgotSuccess("");
+    setForgotOpen(true);
+  };
+
+  const handleForgotSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setForgotError("");
+    setForgotSuccess("");
+    setForgotLoading(true);
+    try {
+      await requestPasswordReset(forgotEmail);
+      setForgotSuccess("If an account exists for this email, we sent a password reset link. Check your inbox.");
+    } catch (error) {
+      setForgotError(error instanceof Error ? error.message : "Could not send reset email.");
+    } finally {
+      setForgotLoading(false);
+    }
   };
 
   const handleSignupSubmit = async (e: FormEvent) => {
@@ -456,6 +496,7 @@ function LandingPageContent() {
               <button
                 type="button"
                 className="text-xs font-medium text-primary hover:underline"
+                onClick={openForgotPassword}
               >
                 Forgot Password
               </button>
@@ -473,6 +514,7 @@ function LandingPageContent() {
               <GoogleIcon className="mr-2 h-4 w-4" />
               Continue with Google
             </Button>
+            {forgotSuccess && !forgotOpen ? <p className="text-xs text-green-700">{forgotSuccess}</p> : null}
             {loginError && <p className="text-xs text-red-600">{loginError}</p>}
           </form>
           <DialogFooter className="mt-3 flex flex-col items-center justify-center border-t border-border pt-3 sm:!justify-center">
@@ -487,6 +529,61 @@ function LandingPageContent() {
               </button>
             </p>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={forgotOpen} onOpenChange={setForgotOpen}>
+        <DialogContent showClose={true} className="max-w-sm gap-0 p-5">
+          <DialogHeader className="space-y-0 pb-3 pt-0">
+            <div className="flex flex-col items-center gap-2">
+              <Image
+                src={FontanaLogo}
+                alt="Fontana Blue Cold Spring"
+                width={88}
+                height={88}
+                className="h-20 w-20 shrink-0 rounded-xl object-contain"
+              />
+              <div className="text-center">
+                <DialogTitle className="text-xl font-bold">Reset password</DialogTitle>
+                <DialogDescription className="text-sm">
+                  Enter your account email and we&apos;ll send you a reset link.
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+          <form onSubmit={(e) => void handleForgotSubmit(e)} className="space-y-3">
+            <div className="space-y-1.5">
+              <Label htmlFor="forgot-email" className="text-xs font-medium text-foreground">
+                Email
+              </Label>
+              <Input
+                id="forgot-email"
+                type="email"
+                required
+                placeholder="Enter your email"
+                autoComplete="email"
+                className="h-9 text-sm"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+              />
+            </div>
+            {forgotError ? <p className="text-xs text-red-600">{forgotError}</p> : null}
+            {forgotSuccess ? <p className="text-xs text-green-700">{forgotSuccess}</p> : null}
+            <Button type="submit" className="h-9 w-full" disabled={forgotLoading}>
+              {forgotLoading ? "Sending..." : "Send reset link"}
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              className="h-9 w-full"
+              onClick={() => {
+                setForgotOpen(false);
+                setLoginOpen(true);
+              }}
+            >
+              Back to login
+            </Button>
+          </form>
         </DialogContent>
       </Dialog>
 
@@ -837,7 +934,7 @@ function LandingPageContent() {
                         {cottage.capacityLabel}
                       </span>
                       <span className="rounded-full bg-primary px-3 py-1 text-[0.7rem] font-semibold text-primary-foreground">
-                        {`₱${cottage.price.toLocaleString()} / night`}
+                        {`₱${cottage.price.toLocaleString()} / day`}
                       </span>
                     </div>
                   </div>

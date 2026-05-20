@@ -2,14 +2,26 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { CalendarClock, MessageSquare, WalletCards } from "lucide-react";
+import { PageToolbar } from "@/components/ui/page-toolbar";
+import { PaymentVerificationBadge } from "@/components/ui/status-badges";
+import {
+  CalendarClock,
+  CheckCircle2,
+  Clock,
+  Eye,
+  MessageSquare,
+  User,
+  Wallet,
+  WalletCards,
+} from "lucide-react";
 import { fetchCurrentUserWithRole } from "@/lib/auth";
 import { getAdminMessageThreads, listPaymentsAdmin, listReservationsAdmin, type PaymentWithRelations } from "@/lib/fontana-data";
 
 export default function CashierDashboardPage() {
+  const [dashSearch, setDashSearch] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [cashier, setCashier] = useState({ fullName: "Cashier", email: "", role: "cashier" });
@@ -70,67 +82,100 @@ export default function CashierDashboardPage() {
     };
   }, [payments]);
 
-  const recentTransactions = useMemo(() => payments.slice(0, 6), [payments]);
+  const recentTransactions = useMemo(() => payments.slice(0, 8), [payments]);
+
+  const filteredTransactions = useMemo(() => {
+    const q = dashSearch.trim().toLowerCase();
+    if (!q) return recentTransactions;
+    return recentTransactions.filter((row) => {
+      const ref = row.reservation?.reference_code?.toLowerCase() ?? "";
+      const guest = (row.reservation?.guest_profile?.full_name ?? row.reservation?.guest_name ?? "").toLowerCase();
+      const method = row.method.toLowerCase();
+      const status = row.status.toLowerCase();
+      return ref.includes(q) || guest.includes(q) || method.includes(q) || status.includes(q);
+    });
+  }, [dashSearch, recentTransactions]);
 
   return (
     <div className="space-y-6">
       {error ? (
         <p className="rounded-md border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800">{error}</p>
       ) : null}
-      <div className="flex flex-col gap-2">
-        <h1 className="text-md font-semibold tracking-tight">Cashier Dashboard</h1>
-        <p className="text-sm text-muted-foreground">
-          Track totals, transactions, and cashier account information in one place.
-        </p>
+      {loading ? <p className="text-sm text-muted-foreground">Loading dashboard...</p> : null}
+
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-md font-semibold tracking-tight">Cashier Dashboard</h1>
+          <p className="text-sm text-muted-foreground">
+            Track totals, transactions, and cashier account information in one place.
+          </p>
+        </div>
+        <Button asChild variant="save" className="shrink-0">
+          <Link href="/cashier/payments" className="inline-flex items-center gap-2">
+            <WalletCards className="h-4 w-4" />
+            Open Payments
+          </Link>
+        </Button>
       </div>
 
-      {loading ? <p className="text-sm text-muted-foreground">Loading dashboard...</p> : null}
       <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="border border-border bg-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Today&apos;s Transactions</CardTitle>
+        <div className="border border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b-0 bg-white px-4 py-3 pb-2 text-foreground">
+            <CardTitle className="text-sm font-medium">Today&apos;s Transactions</CardTitle>
+            <Wallet className="h-4 w-4" />
           </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{stats.todayTransactions}</p>
-            <p className="text-xs text-muted-foreground">{`P${stats.todayAmount.toLocaleString()}`}</p>
+          <CardContent className="px-4 py-3 pt-1">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-2xl font-bold">{stats.todayTransactions}</p>
+              <p className="text-right text-xs text-muted-foreground">{`P${stats.todayAmount.toLocaleString()}`}</p>
+            </div>
           </CardContent>
-        </Card>
-        <Card className="border border-border bg-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Pending Payments</CardTitle>
+        </div>
+        <div className="border border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b-0 bg-white px-4 py-3 pb-2 text-foreground">
+            <CardTitle className="text-sm font-medium">Pending Payments</CardTitle>
+            <Clock className="h-4 w-4" />
           </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{stats.pendingPayments}</p>
-            <p className="text-xs text-muted-foreground">Need verification</p>
+          <CardContent className="px-4 py-3 pt-1">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-2xl font-bold">{stats.pendingPayments}</p>
+              <p className="text-right text-xs text-muted-foreground">Need verification</p>
+            </div>
           </CardContent>
-        </Card>
-        <Card className="border border-border bg-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Verified Payments</CardTitle>
+        </div>
+        <div className="border border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b-0 bg-white px-4 py-3 pb-2 text-foreground">
+            <CardTitle className="text-sm font-medium">Verified Payments</CardTitle>
+            <CheckCircle2 className="h-4 w-4" />
           </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{stats.verifiedPayments}</p>
-            <p className="text-xs text-muted-foreground">Successfully confirmed</p>
+          <CardContent className="px-4 py-3 pt-1">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-2xl font-bold">{stats.verifiedPayments}</p>
+              <p className="text-right text-xs text-muted-foreground">Successfully confirmed</p>
+            </div>
           </CardContent>
-        </Card>
-        <Card className="border border-border bg-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Today&apos;s Stay-ins</CardTitle>
+        </div>
+        <div className="border border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b-0 bg-white px-4 py-3 pb-2 text-foreground">
+            <CardTitle className="text-sm font-medium">Today&apos;s Stay-ins</CardTitle>
+            <CalendarClock className="h-4 w-4" />
           </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{todayReservations}</p>
-            <p className="text-xs text-muted-foreground">Guests currently booked</p>
+          <CardContent className="px-4 py-3 pt-1">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-2xl font-bold">{todayReservations}</p>
+              <p className="text-right text-xs text-muted-foreground">Guests currently booked</p>
+            </div>
           </CardContent>
-        </Card>
+        </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-3">
-        <Card className="border border-border bg-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Cashier Profile</CardTitle>
-            <CardDescription className="text-xs">Current logged-in staff details.</CardDescription>
+      <section className="grid gap-4 sm:grid-cols-3">
+        <div className="border border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b-0 bg-white px-4 py-3 pb-2 text-foreground">
+            <CardTitle className="text-sm font-medium">Cashier Profile</CardTitle>
+            <User className="h-4 w-4 shrink-0" />
           </CardHeader>
-          <CardContent className="space-y-2 text-sm">
+          <CardContent className="space-y-2 px-4 py-3 pt-1 text-sm">
             <p>
               <span className="text-muted-foreground">Name:</span> {cashier.fullName}
             </p>
@@ -141,45 +186,45 @@ export default function CashierDashboardPage() {
               <span className="text-muted-foreground">Role:</span> {cashier.role}
             </p>
           </CardContent>
-        </Card>
-        <Card className="border border-border bg-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Open Guest Messages</CardTitle>
-            <CardDescription className="text-xs">Customer conversation threads requiring attention.</CardDescription>
+        </div>
+        <div className="border border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b-0 bg-white px-4 py-3 pb-2 text-foreground">
+            <CardTitle className="text-sm font-medium">Open Guest Messages</CardTitle>
+            <MessageSquare className="h-4 w-4 shrink-0" />
           </CardHeader>
-          <CardContent>
-            <div className="flex items-center gap-3">
-              <MessageSquare className="h-5 w-5 text-primary" />
+          <CardContent className="px-4 py-3 pt-1">
+            <div className="flex items-center justify-between gap-3">
               <p className="text-2xl font-bold">{messageThreads}</p>
+              <p className="text-right text-xs text-muted-foreground">Threads needing attention</p>
             </div>
           </CardContent>
-        </Card>
-        <Card className="border border-border bg-card">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm">Operations Shortcuts</CardTitle>
-            <CardDescription className="text-xs">Common cashier tasks.</CardDescription>
+        </div>
+        <div className="border border-gray-200 bg-white shadow-sm">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 border-b-0 bg-white px-4 py-3 pb-2 text-foreground">
+            <CardTitle className="text-sm font-medium">Operations Shortcuts</CardTitle>
+            <CalendarClock className="h-4 w-4 shrink-0" />
           </CardHeader>
-          <CardContent className="flex flex-wrap gap-2">
-            <Button asChild size="sm" variant="outline">
-              <Link href="/cashier/reservations">
-                <CalendarClock className="mr-1 h-3.5 w-3.5" />
-                Reservations
-              </Link>
+          <CardContent className="flex flex-col gap-0 px-4 py-3 pt-0">
+            <Button asChild size="sm" variant="outline" className="h-8 w-full justify-center text-xs">
+              <Link href="/cashier/reservations">Reservations</Link>
             </Button>
-            <Button asChild size="sm" variant="outline">
-              <Link href="/cashier/payments">
-                <WalletCards className="mr-1 h-3.5 w-3.5" />
-                Payments
-              </Link>
+            <Button asChild size="sm" variant="outline" className="h-8 w-full justify-center text-xs">
+              <Link href="/cashier/payments">Payments</Link>
             </Button>
           </CardContent>
-        </Card>
+        </div>
       </section>
+
+      <PageToolbar
+        searchValue={dashSearch}
+        onSearchChange={setDashSearch}
+        searchPlaceholder="Search recent transactions..."
+      />
 
       <div className="border border-border bg-card">
         <CardHeader className="border-b bg-muted/40 pb-3">
           <CardTitle className="text-base font-semibold">Recent Transactions</CardTitle>
-          <CardDescription>Latest payment records in the system.</CardDescription>
+          <p className="text-xs text-muted-foreground">Latest payment records in the system.</p>
         </CardHeader>
         <CardContent className="pt-0">
           <Table bordered={false}>
@@ -190,32 +235,52 @@ export default function CashierDashboardPage() {
                 <TableHead>Method</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead>Amount</TableHead>
+                <TableHead className="text-right">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {recentTransactions.length === 0 ? (
+              {!loading && recentTransactions.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} className="py-10 text-center text-sm text-muted-foreground">
+                  <TableCell colSpan={6} className="py-10 text-center text-sm text-muted-foreground">
                     No transactions found.
                   </TableCell>
                 </TableRow>
-              ) : (
-                recentTransactions.map((r) => (
-                  <TableRow key={r.id}>
-                    <TableCell className="font-mono text-xs">{r.reservation?.reference_code ?? "—"}</TableCell>
-                    <TableCell>{r.reservation?.guest_profile?.full_name ?? r.reservation?.guest_name ?? "—"}</TableCell>
-                    <TableCell>{r.method}</TableCell>
-                    <TableCell>{r.status}</TableCell>
-                    <TableCell>{`P${Number(r.amount).toLocaleString()}`}</TableCell>
-                  </TableRow>
-                ))
               )}
+              {!loading && recentTransactions.length > 0 && filteredTransactions.length === 0 && (
+                <TableRow>
+                  <TableCell colSpan={6} className="py-10 text-center text-sm text-muted-foreground">
+                    No transactions match your search.
+                  </TableCell>
+                </TableRow>
+              )}
+              {!loading &&
+                filteredTransactions.map((r) => (
+                  <TableRow key={r.id}>
+                    <TableCell className="font-mono text-xs text-muted-foreground">
+                      {r.reservation?.reference_code ?? "—"}
+                    </TableCell>
+                    <TableCell className="text-sm">
+                      {r.reservation?.guest_profile?.full_name ?? r.reservation?.guest_name ?? "—"}
+                    </TableCell>
+                    <TableCell className="text-sm">{r.method}</TableCell>
+                    <TableCell>
+                      <PaymentVerificationBadge status={r.status} />
+                    </TableCell>
+                    <TableCell className="text-sm">{`P${Number(r.amount).toLocaleString()}`}</TableCell>
+                    <TableCell className="text-right">
+                      <Button size="sm" variant="view" className="h-8 gap-1.5 rounded-sm px-3 text-xs" asChild>
+                        <Link href="/cashier/payments">
+                          <Eye className="h-3.5 w-3.5" />
+                          View
+                        </Link>
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </CardContent>
       </div>
-
-     
     </div>
   );
 }

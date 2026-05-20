@@ -383,7 +383,7 @@ export default function AdminCottagesPage() {
                     </div>
                     <div className="space-y-1 text-xs text-muted-foreground">
                       <p>Capacity: {cottage.capacity} guests</p>
-                      <p>Rate/Night: {money(cottage.rateNight)}</p>
+                      <p>Rate/Day: {money(cottage.rateNight)}</p>
                       <p>Photos: {cottage.galleryUrls.length || (previewSrc(cottage) ? 1 : 0)}</p>
                       <p>Amenities: {cottage.amenities.join(", ") || "None"}</p>
                     </div>
@@ -609,7 +609,7 @@ function CottageFormFields({
             <Input className="h-9 text-sm" type="number" value={form.capacity} onChange={(e) => setForm((prev) => ({ ...prev, capacity: e.target.value }))} placeholder="0" />
           </div>
           <div className="space-y-1">
-            <Label className="text-xs">Rate / night</Label>
+            <Label className="text-xs">Rate / day</Label>
             <Input className="h-9 text-sm" type="number" value={form.rateNight} onChange={(e) => setForm((prev) => ({ ...prev, rateNight: e.target.value }))} placeholder="0" />
           </div>
         </div>

@@ -1,5 +1,6 @@
 import type { AuthChangeEvent, Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabaseClient";
+import { getPasswordResetRedirectUrl } from "@/lib/oauth-config";
 
 export type AppUserRole = "admin" | "cashier" | "client";
 export type AppUserStatus = "active" | "inactive";
@@ -222,6 +223,33 @@ export function onAuthStateChanged(
 
 export async function logout() {
   const { error } = await supabase.auth.signOut();
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function requestPasswordReset(email: string) {
+  const trimmed = email.trim();
+  if (!trimmed) {
+    throw new Error("Please enter your email address.");
+  }
+
+  const redirectTo = getPasswordResetRedirectUrl();
+  if (!redirectTo) {
+    throw new Error("Password reset is not configured. Set NEXT_PUBLIC_SITE_URL in your environment.");
+  }
+
+  const { error } = await supabase.auth.resetPasswordForEmail(trimmed, { redirectTo });
+  if (error) {
+    throw new Error(error.message);
+  }
+}
+
+export async function updatePassword(newPassword: string) {
+  if (newPassword.length < 6) {
+    throw new Error("Password must be at least 6 characters.");
+  }
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
   if (error) {
     throw new Error(error.message);
   }

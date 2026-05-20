@@ -10,18 +10,14 @@ export default function CashierLayout({ children }: { children: ReactNode }) {
       <RoleShell
         roleLabel="Cashier"
         sidebarItems={[
-          { label: "Dashboard", href: "/cashier", icon: RoleIcons.dashboard },
-          { label: "Reservations", href: "/cashier/reservations", icon: RoleIcons.reservations },
-          { label: "Payments", href: "/cashier/payments", icon: RoleIcons.payments },
-          { label: "Invoices/Receipts", href: "/cashier/invoices-receipts", icon: RoleIcons.documents },
-          {
-            label: "Availability Calendar",
-            href: "/cashier/calendar",
-            icon: RoleIcons.calendar,
-          },
-          { label: "Daily Transaction", href: "/cashier/daily-transaction", icon: RoleIcons.reports },
+          { label: "Dashboard", href: "/cashier/dashboard", icon: RoleIcons.dashboard },
+          { label: "Reservation", href: "/cashier/reservations", icon: RoleIcons.reservations },
+          { label: "Availability Calendar", href: "/cashier/calendar", icon: RoleIcons.calendar },
+          { label: "Payment", href: "/cashier/payments", icon: RoleIcons.payments },
+          { label: "Invoices/Receipt", href: "/cashier/invoices-receipts", icon: RoleIcons.documents },
+          { label: "Daily Transactions", href: "/cashier/daily-transaction", icon: RoleIcons.documents },
           { label: "Reports", href: "/cashier/reports", icon: RoleIcons.reports },
-          { label: "Messages", href: "/cashier/messages", icon: RoleIcons.messages },
+          { label: "Message", href: "/cashier/messages", icon: RoleIcons.messages },
           { label: "Reviews", href: "/cashier/reviews", icon: RoleIcons.reviews },
           { label: "Settings", href: "/cashier/settings", icon: RoleIcons.settings },
         ]}

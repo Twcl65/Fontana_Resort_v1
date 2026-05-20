@@ -93,7 +93,7 @@ export default function AdminAllCottagesPage() {
                 <TableHead>ID</TableHead>
                 <TableHead>Name</TableHead>
                 <TableHead>Capacity</TableHead>
-                <TableHead>Rate/Night</TableHead>
+                <TableHead>Rate/Day</TableHead>
                 <TableHead>Amenities</TableHead>
                 <TableHead>Status</TableHead>
                 <TableHead className="text-right">Action</TableHead>
@@ -185,7 +185,7 @@ export default function AdminAllCottagesPage() {
                 <p className="font-medium">{selectedCottage.name}</p>
                 <p className="text-muted-foreground">Capacity</p>
                 <p>{selectedCottage.capacity} guests</p>
-                <p className="text-muted-foreground">Rate/Night</p>
+                <p className="text-muted-foreground">Rate/Day</p>
                 <p>{money(selectedCottage.rate_night)}</p>
                 <p className="text-muted-foreground">Amenities</p>
                 <p>{amenitiesLabel(selectedCottage)}</p>
